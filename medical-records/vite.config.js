@@ -5,4 +5,7 @@ import react from '@vitejs/plugin-react'
 export default defineConfig({
   plugins: [react()],
   base: "./", // ensures relative paths work in public_html
+  optimizeDeps: {
+    include: ['bootstrap']
+  }
 })
