@@ -1,6 +1,6 @@
 export async function getMovie(title) {
     const response = await fetch(
-      `https://YOUR_BACKEND_URL/movies/${encodeURIComponent(title)}`
+      `https://medical-records-swe.onrender.com/movies/${encodeURIComponent(title)}`
     );
     if (!response.ok) {
       throw new Error("Network response was not ok");
