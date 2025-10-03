@@ -13,8 +13,9 @@ CORS(app)  # allows all origins; you can restrict with `origins=[...]`
 # MongoDB connection
 MONGO_URI = os.getenv(
     "MONGO_URI",
-    "mongodb+srv://mballard7:S8BnueZRMU1NrA1Y@sweproject.e7ctmxt.mongodb.net/?retryWrites=true&w=majority&appName=SWEProject"
+    "mongodb://localhost:27017"  # fallback local MongoDB
 )
+
 client = MongoClient(MONGO_URI)
 db = client["sample_mflix"]
 movies_collection = db["movies"]
