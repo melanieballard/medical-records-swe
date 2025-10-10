@@ -7,7 +7,7 @@ import Login from "./pages/Login";
 import PatientPage from "./pages/PatientPage";
 import DoctorPage from "./pages/DoctorPage";
 
-function App() {
+export default function App() {
   return (
     <Routes>
       <Route path="/" element={<Login />} />
