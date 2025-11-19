@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react"; // <-- import useRef
 import { auth, db, storage } from "../firebase";
 import { collection, addDoc, serverTimestamp } from "firebase/firestore";
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
@@ -10,6 +10,8 @@ export default function UploadDocument() {
   const [uploading, setUploading] = useState(false);
   const [selectedPatient, setSelectedPatient] = useState(null);
   const [doctorId, setDoctorId] = useState(null);
+
+  const fileInputRef = useRef(null); // <-- define the ref
 
   useEffect(() => {
     if (auth.currentUser) {
@@ -45,7 +47,6 @@ export default function UploadDocument() {
       async () => {
         try {
           const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
-
           await addDoc(collection(db, `Patients/${patientId}/files`), {
             name: file.name,
             url: downloadURL,
@@ -67,23 +68,47 @@ export default function UploadDocument() {
   };
 
   return (
-    <div style={{ maxWidth: 600, margin: "2rem auto", fontFamily: "sans-serif" }}>
-      <h2 className="text-lg font-semibold mb-3">Upload File for Patient</h2>
-
+    <div>
       <SearchPatient doctorId={doctorId} onSelectPatient={setSelectedPatient} />
 
-      <div>
-        <input type="file" accept="image/*,.pdf" onChange={handleFileChange} />
-        {uploading && <p>Progress: {progress}%</p>}
-      </div>
+      <div style={{ marginTop: "1rem", width: "100%" }}>
+        <form
+          style={{ width: "100%", maxWidth: 600 }}
+          onSubmit={(e) => e.preventDefault()}
+        >
+          <label>Select File:</label>
 
-      <button
-        className="mt-2 bg-blue-500 text-white px-4 py-1 rounded"
-        onClick={handleUpload}
-        disabled={uploading || !doctorId || !selectedPatient || !file}
-      >
-        {uploading ? "Uploading..." : "Upload"}
-      </button>
+          <input
+            type="file"
+            accept="image/*,.pdf"
+            onChange={handleFileChange}
+            ref={fileInputRef} // <-- attach ref
+            style={{ display: "none" }}
+          />
+
+          <button
+            type="button"
+            onClick={() => fileInputRef.current && fileInputRef.current.click()}
+            className="form-button"
+            style={{ marginTop: "0.5rem" }}
+            disabled={!doctorId || !selectedPatient}
+          >
+            {file ? `Selected: ${file.name}` : "Choose File"}
+          </button>
+
+          {uploading && <p style={{ marginTop: "0.5rem" }}>Progress: {progress}%</p>}
+
+          <button
+            type="button"
+            onClick={handleUpload}
+            disabled={uploading || !doctorId || !selectedPatient || !file}
+            className="form-button"
+            style={{ marginTop: "0.5rem" }}
+          >
+            {uploading ? "Uploading..." : "Upload"}
+          </button>
+        </form>
+      </div>
     </div>
   );
 }

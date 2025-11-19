@@ -64,8 +64,7 @@ export default function DoctorSignup() {
   };
 
   return (
-    <div style={{ maxWidth: 500, margin: "2rem auto", fontFamily: "sans-serif" }}>
-      <h2>Doctor Registration</h2>
+    <div>
       <form onSubmit={handleSubmit}>
         <label>First Name:</label>
         <input name="first_name" value={formData.first_name} onChange={handleChange} required />

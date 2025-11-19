@@ -33,28 +33,33 @@ export default function SearchPatient({ onSelectPatient, doctorId }) {
   };
 
   return (
-    <div style={{ marginBottom: "1rem" }}>
-      <label htmlFor="lastName" className="block mb-1 font-medium">
-        Search Patient by Last Name:
-      </label>
-      <input
-        type="text"
-        id="lastName"
-        placeholder="Enter last name"
-        value={lastName}
-        onChange={(e) => setLastName(e.target.value)}
-        className="border p-1 rounded w-full mb-2"
-      />
-      <button
-        onClick={handleSearch}
-        className="bg-gray-700 text-white px-3 py-1 rounded"
-        disabled={!doctorId}
+    <div>
+      <form style={{ width: "100%", maxWidth: 600, marginTop: "1rem" }}
+        onSubmit={(e) => {
+          e.preventDefault(); // prevents page reload
+          handleSearch();
+        }}
       >
-        Search
-      </button>
+        <label htmlFor="lastName" className="block mb-1 font-medium">
+          Search Patient by Last Name:
+        </label>
+        <input
+          type="text"
+          id="lastName"
+          placeholder="Enter last name"
+          value={lastName}
+          onChange={(e) => setLastName(e.target.value)}
+        />
+        <button
+          type="submit"
+          disabled={!doctorId}
+        >
+          Search
+        </button>
+      </form>
 
       {patients.length > 0 && (
-        <div style={{ marginTop: "1rem" }}>
+        <form style={{ width: "100%", maxWidth: 600, marginTop: "1rem" }}>
           <label className="block mb-1 font-medium">Select Patient:</label>
           <select
             className="border p-1 rounded w-full"
@@ -73,7 +78,7 @@ export default function SearchPatient({ onSelectPatient, doctorId }) {
               </option>
             ))}
           </select>
-        </div>
+        </form>
       )}
     </div>
   );

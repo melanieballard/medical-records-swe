@@ -30,14 +30,10 @@ export default function RegistrationForm() {
     setStatus("Saving...");
 
     try {
-      // 1️⃣ Create Firebase Auth user
       const userCredential = await createUserWithEmailAndPassword(auth, formData.email, formData.password);
       const user = userCredential.user;
-
-      // 2️⃣ Generate patient_id
       const patient_id = Date.now();
 
-      // 3️⃣ Add patient to Patients collection
       await addDoc(collection(db, "Patients"), {
         ...formData,
         patient_id,
@@ -48,7 +44,6 @@ export default function RegistrationForm() {
         created_at: Timestamp.now()
       });
 
-      // 4️⃣ Add user to Users collection for login
       await setDoc(doc(db, "Users", user.uid), {
         uid: user.uid,
         email: formData.email,
@@ -76,8 +71,7 @@ export default function RegistrationForm() {
   };
 
   return (
-    <div style={{ maxWidth: 500, margin: "2rem auto", fontFamily: "sans-serif" }}>
-      <h2>Patient Registration</h2>
+    <div>
       <form onSubmit={handleSubmit}>
         <label>First Name:</label>
         <input name="first_name" value={formData.first_name} onChange={handleChange} required />
@@ -114,10 +108,10 @@ export default function RegistrationForm() {
         <label>Emergency Contact Phone:</label>
         <input name="emergency_contact_phone" value={formData.emergency_contact_phone} onChange={handleChange} required />
 
-        <button type="submit" style={{ marginTop: "1rem" }}>Register</button>
+        <button type="submit">Register</button>
       </form>
+
       {status && <p style={{ marginTop: "1rem" }}>{status}</p>}
     </div>
   );
 }
-

@@ -41,18 +41,15 @@ export default function ViewPatientFiles() {
   }, [selectedPatient]);
 
   return (
-    <div style={{ maxWidth: 600, margin: "2rem auto", fontFamily: "sans-serif" }}>
-      <h2 className="text-lg font-semibold mb-3">View Patient Files</h2>
-
+    <div>
       {/* Patient Search */}
       <SearchPatient doctorId={doctorId} onSelectPatient={setSelectedPatient} />
 
       {/* Files Dropdown */}
       {files.length > 0 && (
-        <div style={{ marginBottom: "1rem" }}>
-          <label className="block mb-1 font-medium">Select File:</label>
+        <form style={{ width: "100%", maxWidth: 600, marginTop: "1rem" }}>
+          <label>Select File:</label>
           <select
-            className="border p-1 rounded w-full"
             onChange={(e) =>
               setSelectedFile(files.find((f) => f.id === e.target.value))
             }
@@ -68,24 +65,30 @@ export default function ViewPatientFiles() {
               </option>
             ))}
           </select>
-        </div>
+        </form>
       )}
 
       {/* Render selected file */}
       {selectedFile && (
-        <div style={{ marginTop: "1rem" }}>
+        <div style={{ marginTop: "1rem", width: "100%" }}>
           {selectedFile.name.endsWith(".pdf") ? (
             <iframe
               src={selectedFile.url}
               width="100%"
               height="600px"
               title={selectedFile.name}
+              style={{ border: "none", borderRadius: "6px" }}
             />
           ) : (
             <img
               src={selectedFile.url}
               alt={selectedFile.name}
-              style={{ width: "100%", maxHeight: "600px", objectFit: "contain" }}
+              style={{
+                width: "100%",
+                maxHeight: "600px",
+                objectFit: "contain",
+                borderRadius: "6px",
+              }}
             />
           )}
         </div>
