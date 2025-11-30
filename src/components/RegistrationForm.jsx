@@ -2,14 +2,13 @@
 import React, { useState } from "react";
 import { db, auth } from "../firebase";
 import { collection, addDoc, Timestamp, doc, setDoc } from "firebase/firestore";
-import { createUserWithEmailAndPassword } from "firebase/auth";
+import { createUserWithEmailAndPassword, sendPasswordResetEmail } from "firebase/auth";
 
 export default function RegistrationForm() {
   const [formData, setFormData] = useState({
     first_name: "",
     last_name: "",
     email: "",
-    password: "",
     address: "",
     date_of_birth: "",
     gender: "",
@@ -30,25 +29,31 @@ export default function RegistrationForm() {
     setStatus("Saving...");
 
     try {
-      // 1️⃣ Create Firebase Auth user
-      const userCredential = await createUserWithEmailAndPassword(auth, formData.email, formData.password);
+      // 1️⃣ Create Firebase Auth user with temporary password
+      const tempPassword = Math.random().toString(36).slice(-10);
+      const userCredential = await createUserWithEmailAndPassword(auth, formData.email, tempPassword);
       const user = userCredential.user;
 
-      // 2️⃣ Generate patient_id
+      // 2️⃣ Send password setup email to patient
+      await sendPasswordResetEmail(auth, formData.email);
+      console.log("Password setup email sent to patient.");
+
+      // 3️⃣ Generate patient_id
       const patient_id = Date.now();
 
-      // 3️⃣ Add patient to Patients collection
+      // 4️⃣ Add patient to Patients collection (unverified)
       await addDoc(collection(db, "Patients"), {
         ...formData,
         patient_id,
         user_id: user.uid,
+        emailVerified: false,
         phone_number: Number(formData.phone_number),
         emergency_contact_phone: String(formData.emergency_contact_phone),
         date_of_birth: formData.date_of_birth ? Timestamp.fromDate(new Date(formData.date_of_birth)) : null,
         created_at: Timestamp.now()
       });
 
-      // 4️⃣ Add user to Users collection for login
+      // 5️⃣ Add user to Users collection for role management
       await setDoc(doc(db, "Users", user.uid), {
         uid: user.uid,
         email: formData.email,
@@ -56,12 +61,11 @@ export default function RegistrationForm() {
         created_at: Timestamp.now()
       });
 
-      setStatus("✅ Patient registered successfully!");
+      setStatus("✅ Patient registered! They will receive an email to set their password.");
       setFormData({
         first_name: "",
         last_name: "",
         email: "",
-        password: "",
         address: "",
         date_of_birth: "",
         gender: "",
@@ -88,9 +92,6 @@ export default function RegistrationForm() {
         <label>Email:</label>
         <input type="email" name="email" value={formData.email} onChange={handleChange} required />
 
-        <label>Password:</label>
-        <input type="password" name="password" value={formData.password} onChange={handleChange} required />
-
         <label>Address:</label>
         <input name="address" value={formData.address} onChange={handleChange} required />
 
@@ -116,6 +117,7 @@ export default function RegistrationForm() {
 
         <button type="submit" style={{ marginTop: "1rem" }}>Register</button>
       </form>
+
       {status && <p style={{ marginTop: "1rem" }}>{status}</p>}
     </div>
   );
