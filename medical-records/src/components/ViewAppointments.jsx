@@ -7,7 +7,8 @@ import {
   getDocs,
   doc,
   getDoc,
-  onSnapshot
+  onSnapshot,
+  deleteDoc
 } from "firebase/firestore";
 
 export default function ViewAppointments() {
@@ -116,6 +117,16 @@ export default function ViewAppointments() {
 
 // Appointment card component
 function AppointmentCard({ appt }) {
+
+  const handleCancel = async () => {
+    try {
+      await deleteDoc(doc(db, "Reservations", appt.id));
+      console.log("Appointment canceled:", appt.id);
+    } catch (err) {
+      console.error("Error cancelling appointment:", err);
+    }
+  };
+
   return (
     <div style={cardStyle}>
       <div
@@ -131,6 +142,23 @@ function AppointmentCard({ appt }) {
       <div style={{ fontSize: "0.85rem", color: "#4b5563", marginTop: "0.25rem" }}>
         <strong>Location:</strong> {appt.location || "Unknown"}
       </div>
+
+      <button
+        onClick={handleCancel}
+        style={{
+          marginTop: "0.8rem",
+          padding: "0.45rem 0.9rem",
+          fontSize: "0.85rem",
+          backgroundColor: "#ef4444",
+          color: "white",
+          border: "none",
+          borderRadius: "12px",
+          cursor: "pointer",
+        }}
+      >
+        Cancel Appointment
+      </button>
+
     </div>
   );
 }
