@@ -299,7 +299,7 @@ html {
 .landing-contact {
   display: grid;
   gap: 10px;
-  max-width: 720px;
+  width: 100%;
 }
 
 .landing-contact-row {

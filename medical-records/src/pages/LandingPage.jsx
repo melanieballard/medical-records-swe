@@ -96,8 +96,8 @@ export default function LandingPage() {
               <p>Dermatology, cardiology, orthopedics, endocrinology, and more.</p>
             </div>
             <div className="landing-tile">
-              <h3>Telehealth Visits</h3>
-              <p>Remote consultations for follow-ups, questions, and quick assessments.</p>
+              <h3>Doctor Focused</h3>
+              <p>One platform for doctor and patient use, streamlining communication and care.</p>
             </div>
             <div className="landing-tile">
               <h3>Lab Results</h3>
