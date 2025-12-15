@@ -8,7 +8,7 @@ import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
 const allowedLocations = [
   "New York City",
   "Boston",
-  "New Jersey City",
+  "Jersey City",
   "Long Island"
 ];
 
