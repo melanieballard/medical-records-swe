@@ -12,6 +12,7 @@ export default function BookingRegistrationForm({ selectedDoctor, onRegistration
     last_name: "",
     email: "",
     password: "",
+    confirm_password: "",
     address: "",
     date_of_birth: "",
     gender: "",
@@ -33,6 +34,11 @@ export default function BookingRegistrationForm({ selectedDoctor, onRegistration
 
     if (!genders.includes(formData.gender)) {
       setStatus("❌ Invalid Gender selected.");
+      return;
+    }
+
+    if (formData.password !== formData.confirm_password) {
+      setStatus("❌ Passwords do not match.");
       return;
     }
 
@@ -74,6 +80,7 @@ if (onUidReady) {
         last_name: "",
         email: "",
         password: "",
+        confirm_password: "",
         address: "",
         date_of_birth: "",
         gender: "",
@@ -137,6 +144,11 @@ if (onUidReady) {
         <div>
           <label htmlFor="password">Password</label>
           <input style={inputStyle} type="password" id="password" name="password" placeholder="Password" value={formData.password} onChange={handleChange} required />
+        </div>
+
+        <div>
+          <label htmlFor="confirm_password">Confirm Password</label>
+          <input style={inputStyle} type="password" id="confirm_password" name="confirm_password" placeholder="Confirm Password" value={formData.confirm_password} onChange={handleChange} required />
         </div>
 
         <div>

@@ -20,6 +20,7 @@ function DoctorSignup() {
     last_name: "",
     email: "",
     password: "",
+    confirm_password: "",
     phone_number: "",
     specialty: "",
     patients: "",
@@ -56,6 +57,11 @@ function DoctorSignup() {
     // ✅ Validate email domain
     if (!formData.email.endsWith("@fordham.edu")) {
       setStatus("Doctors must register with a verified email, contact your IT depart for verification");
+      return;
+    }
+
+    if (formData.password !== formData.confirm_password) {
+      setStatus("❌ Passwords do not match.");
       return;
     }
 
@@ -125,6 +131,7 @@ function DoctorSignup() {
         <input placeholder="Last Name" name="last_name" value={formData.last_name} onChange={handleChange} required style={inputStyle} />
         <input placeholder="Email" type="email" name="email" value={formData.email} onChange={handleChange} required style={inputStyle} />
         <input placeholder="Password" type="password" name="password" value={formData.password} onChange={handleChange} required style={inputStyle} />
+        <input placeholder="Confirm Password" type="password" name="confirm_password" value={formData.confirm_password} onChange={handleChange} required style={inputStyle} />
         <input placeholder="Phone Number" name="phone_number" value={formData.phone_number} onChange={handleChange} required style={inputStyle} />
         <input placeholder="Street Address" name="street" value={formData.address.street} onChange={handleAddressChange} required style={inputStyle} />
         <input placeholder="City" name="city" value={formData.address.city} onChange={handleAddressChange} required style={inputStyle} />
@@ -132,14 +139,35 @@ function DoctorSignup() {
         <input placeholder="ZIP Code" name="zip" value={formData.address.zip} onChange={handleAddressChange} required style={inputStyle} />
         <input placeholder="Specialty" name="specialty" value={formData.specialty} onChange={handleChange} required style={inputStyle} />
         <input type="number" placeholder="How many patients does this Doctor have?" name="patients" value={formData.patients} onChange={handleChange} required style={inputStyle} />
-        <input type="file" accept="image/*" required onChange={(e) => setFormData(prev => ({ ...prev, photoFile: e.target.files[0] }))} />
+        <label style={labelStyle}>Upload Profile Picture</label>
+        <input type="file" accept="image/*" required onChange={(e) => setFormData(prev => ({ ...prev, photoFile: e.target.files[0] }))} style={inputStyle} />
         <select name="location" value={formData.location} onChange={handleChange} required style={inputStyle}>
           <option value="">Select Location</option>
           {allowedLocations.map(loc => (<option key={loc} value={loc}>{loc}</option>))}
         </select>
 
         <div style={{ display: "flex", justifyContent: "center", gap: "1rem", marginTop: "1.1rem" }}>
-          <button type="button" style={buttonSecondary} onClick={() => setFormData({ first_name: "", last_name: "", email: "", password: "", phone_number: "", specialty: "" })}>
+          <button type="button" style={buttonSecondary}
+            onClick={() => {
+              // 1️⃣ Clear all form fields
+              setFormData({
+                first_name: "",
+                last_name: "",
+                email: "",
+                password: "",
+                confirm_password: "",
+                phone_number: "",
+                specialty: "",
+                patients: "",
+                address: { street: "", city: "", state: "", zip: "" },
+                location: "",
+                photoFile: null
+              });
+
+              // 2️⃣ Navigate back
+              navigate(-1);
+            }}
+            >
             Cancel
           </button>
           <button type="submit" style={buttonPrimary}>Register</button>
@@ -157,6 +185,14 @@ const containerStyle = {
   margin: "0 auto",
   fontFamily: "SF Pro Display, -apple-system, BlinkMacSystemFont, Inter, system-ui, sans-serif",
   textAlign: "left"
+};
+
+const labelStyle = {
+  fontSize: "0.78rem",
+  fontWeight: 600,
+  letterSpacing: "0.14em",
+  textTransform: "uppercase",
+  color: "#374151",
 };
 
 const inputStyle = {
